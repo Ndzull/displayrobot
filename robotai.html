@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Robot Face - Shortcut Keys</title>
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            font-family: sans-serif;
+            color: #555; /* Warna teks petunjuk agar tidak mencolok */
+        }
+
+        svg {
+            width: 80%;
+            height: auto;
+            max-height: 80vh;
+        }
+
+        /* Animasi mata berkedip otomatis setiap 3 detik */
+        .eye {
+            fill: white;
+            transform-origin: center;
+            animation: blink 3s infinite;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        @keyframes blink {
+            0%, 93% { transform: scaleY(1); }
+            95% { transform: scaleY(0.05); }
+            97% { transform: scaleY(1); }
+            100% { transform: scaleY(1); }
+        }
+
+        /* Rahasia transisi mulut yang mulus (morphing) */
+        .animated-path {
+            transition: d 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .hints {
+            position: absolute;
+            bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+        kbd {
+            background: #333;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas Wajah Robot -->
+    <svg viewBox="0 0 1080 720" xmlns="http://www.w3.org/2000/svg">
+        <!-- Mata -->
+        <ellipse id="eye-right" cx="250" cy="300" rx="100" ry="150" />
+        <ellipse id="eye-left" cx="830" cy="300" rx="100" ry="150" />
+        
+        <!-- Mulut (Default: Senyum) -->
+        <path id="mouth" class="animated-path" 
+              d="M 450 500 C 500 560, 580 560, 630 500" 
+              stroke="white" stroke-width="15" fill="none" stroke-linecap="round"/>
+    </svg>
+
+    <!-- Petunjuk Shortcut di layar bawah -->
+    <div class="hints">
+        Tekan <kbd>1</kbd> Senyum | <kbd>2</kbd> Berpikir | <kbd>3</kbd> Datar
+    </div>
+
+    <script>
+        const mouth = document.getElementById('mouth');
+const eyeLeft = document.getElementById('eye-left');
+const eyeRight = document.getElementById('eye-right');
+
+// Kumpulan konfigurasi untuk masing-masing ekspresi
+const expressions = {
+    smile: {
+        mouth: "M 450 500 C 500 560, 580 560, 630 500",
+        // Mata sedikit menyipit saat tersenyum (ry lebih kecil)
+        eyeL: { rx: 100, ry: 130, cy: 350 }, 
+        eyeR: { rx: 100, ry: 130, cy: 350 }
+    },
+    
+    thinking: {
+        mouth: "M 400 530 C 450 500, 400 500, 510 590", // Path dari kamu
+        // Mata kiri normal, mata kanan mengecil dan naik sedikit
+        eyeL: { rx: 100, ry: 150, cy: 360 }, 
+        eyeR: { rx: 70, ry: 100, cy: 340 }  
+    },
+    
+    neutral: {
+        mouth: "M 450 500 C 500 500, 580 500, 630 500",
+        // Mata normal
+        eyeL: { rx: 100, ry: 150, cy: 360 }, 
+        eyeR: { rx: 100, ry: 150, cy: 360 }
+    }
+};
+
+// Fungsi untuk mengubah ekspresi (Mulut dan Mata)
+function setExpression(mood) {
+    const data = expressions[mood];
+    
+    if (data) {
+        // 1. Ubah Mulut
+        mouth.setAttribute('d', data.mouth);
+        
+        // 2. Ubah Mata Kiri
+        eyeLeft.setAttribute('rx', data.eyeL.rx);
+        eyeLeft.setAttribute('ry', data.eyeL.ry);
+        eyeLeft.setAttribute('cy', data.eyeL.cy);
+        
+        // 3. Ubah Mata Kanan
+        eyeRight.setAttribute('rx', data.eyeR.rx);
+        eyeRight.setAttribute('ry', data.eyeR.ry);
+        eyeRight.setAttribute('cy', data.eyeR.cy);
+    }
+}
+
+// --- SHORTKEY LISTENER ---
+document.addEventListener('keydown', (event) => {
+    switch(event.key) {
+        case '1':
+            setExpression('smile');
+            console.log("Ekspresi: Senyum");
+            break;
+        case '2':
+            setExpression('thinking');
+            console.log("Ekspresi: Berpikir");
+            break;
+        case '3':
+            setExpression('neutral');
+            console.log("Ekspresi: Datar");
+            break;
+    }
+});
+    </script>
+</body>
+</html>

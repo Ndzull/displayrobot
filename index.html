@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Robot Face SVG</title>
+    <style>
+        body {
+            background-color: #1a1a1a; /* Background layar robot */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: sans-serif;
+        }
+        
+        /* Area Wajah Robot */
+        svg {
+            width: 400px;
+            height: 300px;
+            background: #000;
+            border-radius: 30px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        /* Rahasia transisi mulus ada di sini */
+        .animated-path {
+            transition: d 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        
+        .eye {
+            transform-origin: center;
+            transition: transform 0.1s ease-in-out;
+        }
+
+        /* Styling tombol untuk testing */
+        .controls { margin-top: 20px; display: flex; gap: 10px; }
+        button { padding: 10px 20px; cursor: pointer; border-radius: 5px; background: #0df; border: none; font-weight: bold;}
+    </style>
+</head>
+<body>
+
+    <!-- Canvas SVG -->
+    <svg viewBox="0 0 400 300" id="robot-face">
+        <!-- Mata Kiri & Kanan -->
+        <!-- Titik tengah mata diatur di pusat rect untuk memudahkan scale animasi kedip -->
+        <rect id="eye-left" class="eye" x="100" y="80" width="40" height="60" rx="20" fill="#00ffff" />
+        <rect id="eye-right" class="eye" x="260" y="80" width="40" height="60" rx="20" fill="#00ffff" />
+
+        <!-- Mulut menggunakan path agar bisa di-morphing -->
+        <!-- M: Move to, Q: Quadratic Bezier Curve -->
+        <path id="mouth" class="animated-path" 
+              d="M 140 220 Q 200 220 260 220" 
+              stroke="#00ffff" stroke-width="12" fill="transparent" stroke-linecap="round"/>
+    </svg>
+
+    <!-- Tombol Kontrol (Sebagai simulasi input dari sistem robot) -->
+    <div class="controls">
+        <button onclick="setExpression('neutral')">Netral</button>
+        <button onclick="setExpression('happy')">Senang</button>
+        <button onclick="setExpression('sad')">Sedih</button>
+        <button onclick="blink()">Berkedip</button>
+    </div>
+
+    <script>
+        const mouth = document.getElementById('mouth');
+        const eyeL = document.getElementById('eye-left');
+        const eyeR = document.getElementById('eye-right');
+
+        // Fungsi untuk mengubah path mulut secara dinamis
+        function setExpression(mood) {
+            if (mood === 'neutral') {
+                // Mulut lurus datar
+                mouth.setAttribute('d', 'M 140 220 Q 200 220 260 220');
+            } else if (mood === 'happy') {
+                // Kurva melengkung ke bawah (senyum)
+                mouth.setAttribute('d', 'M 140 200 Q 200 260 260 200');
+            } else if (mood === 'sad') {
+                // Kurva melengkung ke atas (cemberut)
+                mouth.setAttribute('d', 'M 140 240 Q 200 190 260 240');
+            }
+        }
+
+        // Fungsi berkedip mandiri tanpa mengganggu ekspresi mulut
+        function blink() {
+            // Gepengkan mata secara vertikal
+            eyeL.style.transform = "scaleY(0.1)";
+            eyeR.style.transform = "scaleY(0.1)";
+            
+            // Kembalikan mata ke ukuran semula setelah 150 milidetik
+            setTimeout(() => {
+                eyeL.style.transform = "scaleY(1)";
+                eyeR.style.transform = "scaleY(1)";
+            }, 150);
+        }
+
+        // Bikin robot berkedip otomatis sesekali agar terlihat hidup
+        setInterval(() => {
+            if (Math.random() > 0.5) blink(); // 50% kemungkinan berkedip setiap 3 detik
+        }, 3000);
+    </script>
+</body>
+</html>
