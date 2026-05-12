@@ -93,6 +93,47 @@
             border-radius: 4px;
             font-family: monospace;
         }
+
+        .anger-mark {
+            fill: none;
+            stroke: #E53935; 
+            stroke-width: 14;
+            stroke-linecap: round;
+            opacity: 0;
+            transform-origin: 930px 200px;
+            transform: scale(0.5) rotate(-15deg);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .show-anger {
+            opacity: 1 !important;
+            transform: scale(1) rotate(0deg) !important;
+        }
+
+        .hide-normal {
+            opacity: 0 !important;
+            transition: opacity 0.3s ease-out;
+        }
+
+        .dizzy-eyes {
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+            pointer-events: none;
+        }
+
+        .show-dizzy {
+            opacity: 1 !important;
+        }
+
+        .spiral {
+            transform-origin: 0px 0px; 
+            animation: spin-cw 1.5s linear infinite; 
+        }
+
+        @keyframes spin-cw {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -116,6 +157,22 @@
             <ellipse cx="820" cy="470" rx="22" ry="14" />
             <path d="M 798 470 Q 820 510, 842 470" fill="#89CFF0" />
         </g>
+
+        <!-- anger mark -->
+        <g id="anger-mark" class="anger-mark">
+            <path d="M 900 150 Q 930 180, 960 150" /> 
+            <path d="M 900 250 Q 930 220, 960 250" /> 
+            <path d="M 880 170 Q 910 200, 880 230" /> 
+            <path d="M 980 170 Q 950 200, 980 230" /> 
+        </g>
+
+        <!-- pusing -->
+         <g id="dizzy-eye-left" class="dizzy-eyes" transform="translate(250, 300)">
+            <path class="spiral" d="M 0 0 A 15 15 0 0 1 30 0 A 30 30 0 0 1 -30 0 A 45 45 0 0 1 60 0 A 60 60 0 0 1 -60 0 A 75 75 0 0 1 90 0 A 90 90 0 0 1 -90 0 A 105 105 0 0 1 120 0 A 120 120 0 0 1 -120 0" fill="none" stroke="white" stroke-width="20" stroke-linecap="round" />
+        </g>
+        <g id="dizzy-eye-right" class="dizzy-eyes" transform="translate(830, 300)">
+            <path class="spiral" d="M 0 0 A 15 15 0 0 1 30 0 A 30 30 0 0 1 -30 0 A 45 45 0 0 1 60 0 A 60 60 0 0 1 -60 0 A 75 75 0 0 1 90 0 A 90 90 0 0 1 -90 0 A 105 105 0 0 1 120 0 A 120 120 0 0 1 -120 0" fill="none" stroke="white" stroke-width="20" stroke-linecap="round" />
+        </g>
         
         <!-- Mulut (Default: Senyum) -->
         <path id="mouth" class="animated-path" 
@@ -136,12 +193,15 @@ const browLeft = document.getElementById('eyebrow-left');
 const browRight = document.getElementById('eyebrow-right');
 const tearLeft  = document.getElementById('tear-left');
 const tearRight = document.getElementById('tear-right');
+const angerMark = document.getElementById('anger-mark');
 
 // ekspresi setting
 const expressions = {
     smile: {
         eyebrows: false,
         tears: false,
+        anger: false,
+        isDizzy: false,
         mouth: "M 450 500 C 500 560, 580 560, 630 500",
         eyeL: { cx: 250, cy: 300, rx: 100, ry: 150 }, 
         eyeR: { cx: 830, cy: 300, rx: 100, ry: 150 }
@@ -150,6 +210,8 @@ const expressions = {
     therock: {
         eyebrows: true,
         tears: false,
+        anger: false,
+        isDizzy: false,
         browLeft: "M 150 140 Q 250 210, 350 170",
         browRight: "M 730 160 Q 830 100, 930 140",
         mouth: "M 400 530 C 450 500, 400 500, 510 590",
@@ -160,7 +222,11 @@ const expressions = {
     angry: {
         eyebrows: true,
         tears: false,
+        anger: true,
+        isDizzy: false,
         mouth: "M 450 500 C 500 440, 580 440, 630 500",
+        browLeft: "M 150 100 Q 250 150, 350 180", 
+        browRight: "M 930 100 Q 830 150, 730 180", 
         eyeL: { cx: 250, cy: 320, rx: 100, ry: 120 }, 
         eyeR: { cx: 830, cy: 320, rx: 100, ry: 120 }
     },
@@ -168,9 +234,11 @@ const expressions = {
     sad: {
         eyebrows: true,
         tears: true,
+        anger: false,
+        isDizzy: false,
         mouth: "M 450 500 C 500 440, 580 440, 630 500",
-        browLeft: "M 350 100 Q 250 150, 150 180", 
-        browRight: "M 730 100 Q 830 150, 930 180", 
+        browLeft: "M 150 180 Q 250 150, 350 100", 
+        browRight: "M 930 180 Q 830 150, 730 100", 
         eyeL: { cx: 250, cy: 320, rx: 100, ry: 120 }, 
         eyeR: { cx: 830, cy: 320, rx: 100, ry: 120 }
 
@@ -183,14 +251,36 @@ const expressions = {
     neutral: {
         eyebrows: false,
         tears: false,
+        isDizzy: false,
         mouth: "M 450 500 C 500 500, 580 500, 630 500",
         eyeL: { cx: 250, cy: 300, rx: 100, ry: 150 }, 
         eyeR: { cx: 830, cy: 300, rx: 100, ry: 150 }
-    }
+    },
+
+    dizzy: {
+        isDizzy: true, 
+        eyebrows: false,
+        tears: false,
+        mouth: "M 520 540 Q 540 520, 560 540", 
+        eyeL: { cx: 250, cy: 300, rx: 100, ry: 150 }, 
+        eyeR: { cx: 830, cy: 300, rx: 100, ry: 150 }
+    },
 };
 
 function setExpression(mood) {
     const data = expressions[mood];
+
+    if (data.isDizzy === true) {
+        eyeLeft.classList.add('hide-normal');
+        eyeRight.classList.add('hide-normal');
+        document.getElementById('dizzy-eye-left').classList.add('show-dizzy');
+        document.getElementById('dizzy-eye-right').classList.add('show-dizzy');
+    } else {
+        eyeLeft.classList.remove('hide-normal');
+        eyeRight.classList.remove('hide-normal');
+        document.getElementById('dizzy-eye-left').classList.remove('show-dizzy');
+        document.getElementById('dizzy-eye-right').classList.remove('show-dizzy');
+    }
     
     if (data) {
         mouth.setAttribute('d', data.mouth);
@@ -224,7 +314,13 @@ function setExpression(mood) {
     } else {
         tearLeft.classList.remove('show-tear');
         tearRight.classList.remove('show-tear');  
-    }  
+    } 
+    
+    if (data.anger === true) {
+        angerMark.classList.add('show-anger');
+    } else {
+        angerMark.classList.remove('show-anger');
+    } 
 }
 
 
