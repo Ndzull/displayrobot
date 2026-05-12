@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Robot Face - Shortcut Keys</title>
+    <title>Robot Face</title>
     <style>
         body {
             background-color: black;
@@ -14,7 +14,7 @@
             margin: 0;
             overflow: hidden;
             font-family: sans-serif;
-            color: #555; /* Warna teks petunjuk agar tidak mencolok */
+            color: #555; 
         }
 
         svg {
@@ -23,12 +23,50 @@
             max-height: 80vh;
         }
 
-        /* Animasi mata berkedip otomatis setiap 3 detik */
         .eye {
             fill: white;
             transform-origin: center;
             animation: blink 3s infinite;
             transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .animated-eyebrows {
+            fill: none;
+            stroke: white;
+            stroke-width: 15;
+            stroke-linecap: round;
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+
+        .show-brows {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tear {
+            fill: #89CFF0;
+            opacity: 0;
+        }
+
+        .show-tear {
+            animation: drop 2s infinite;
+        }
+
+        @keyframes drop {
+            0% {
+                opacity: 1;
+                transform: translateY(-80px);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(120px);
+            }
+        }
+        .show-tear-static {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
         }
 
         @keyframes blink {
@@ -38,7 +76,6 @@
             100% { transform: scaleY(1); }
         }
 
-        /* Rahasia transisi mulut yang mulus (morphing) */
         .animated-path {
             transition: d 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
@@ -60,11 +97,25 @@
 </head>
 <body>
 
-    <!-- Canvas Wajah Robot -->
+    <!-- Canvas Muka Robot -->
     <svg viewBox="0 0 1080 720" xmlns="http://www.w3.org/2000/svg">
+        <!-- Alis -->
+        <path id="eyebrow-left" class="animated-eyebrows" d="M 150 180 Q 250 160, 350 210" />
+        <path id="eyebrow-right" class="animated-eyebrows" d="M 730 210 Q 830 160, 930 180" />
         <!-- Mata -->
-        <ellipse id="eye-right" cx="250" cy="300" rx="100" ry="150" />
-        <ellipse id="eye-left" cx="830" cy="300" rx="100" ry="150" />
+        <ellipse id="eye-right" class="eye" cx="250" cy="300" rx="100" ry="150" />
+        <ellipse id="eye-left" class="eye" cx="830" cy="300" rx="100" ry="150" />
+
+        <!-- air mata -->
+        <g id="tear-left" class="tear">
+            <ellipse cx="240" cy="470" rx="22" ry="14" />
+            <path d="M 218 470 Q 240 510, 262 470" fill="#89CFF0" />
+        </g>
+
+        <g id="tear-right" class="tear">
+            <ellipse cx="820" cy="470" rx="22" ry="14" />
+            <path d="M 798 470 Q 820 510, 842 470" fill="#89CFF0" />
+        </g>
         
         <!-- Mulut (Default: Senyum) -->
         <path id="mouth" class="animated-path" 
@@ -72,61 +123,112 @@
               stroke="white" stroke-width="15" fill="none" stroke-linecap="round"/>
     </svg>
 
-    <!-- Petunjuk Shortcut di layar bawah -->
+    <!-- keyboard shortcut -->
     <div class="hints">
-        Tekan <kbd>1</kbd> Senyum | <kbd>2</kbd> Berpikir | <kbd>3</kbd> Datar
+        Klik <kbd>1</kbd> Senyum | <kbd>2</kbd> Therock | <kbd>3</kbd> Datar | <kbd>4</kbd> Marah | <kbd>5</kbd> Sedih | <kbd>6</kbd> Pusing | <kbd>7</kbd> Charged | <kbd>8</kbd> Berpikir | <kbd>9</kbd> Ngantuk
     </div>
 
-    <script>
-        const mouth = document.getElementById('mouth');
+<script>
+const mouth = document.getElementById('mouth');
 const eyeLeft = document.getElementById('eye-left');
 const eyeRight = document.getElementById('eye-right');
+const browLeft = document.getElementById('eyebrow-left');
+const browRight = document.getElementById('eyebrow-right');
+const tearLeft  = document.getElementById('tear-left');
+const tearRight = document.getElementById('tear-right');
 
-// Kumpulan konfigurasi untuk masing-masing ekspresi
+// ekspresi setting
 const expressions = {
     smile: {
+        eyebrows: false,
+        tears: false,
         mouth: "M 450 500 C 500 560, 580 560, 630 500",
-        // Mata sedikit menyipit saat tersenyum (ry lebih kecil)
-        eyeL: { rx: 100, ry: 130, cy: 350 }, 
-        eyeR: { rx: 100, ry: 130, cy: 350 }
+        eyeL: { cx: 250, cy: 300, rx: 100, ry: 150 }, 
+        eyeR: { cx: 830, cy: 300, rx: 100, ry: 150 }
     },
     
-    thinking: {
-        mouth: "M 400 530 C 450 500, 400 500, 510 590", // Path dari kamu
-        // Mata kiri normal, mata kanan mengecil dan naik sedikit
-        eyeL: { rx: 100, ry: 150, cy: 360 }, 
-        eyeR: { rx: 70, ry: 100, cy: 340 }  
+    therock: {
+        eyebrows: true,
+        tears: false,
+        browLeft: "M 150 140 Q 250 210, 350 170",
+        browRight: "M 730 160 Q 830 100, 930 140",
+        mouth: "M 400 530 C 450 500, 400 500, 510 590",
+        eyeL: { cx: 250, cy: 300, rx: 100, ry: 150 }, 
+        eyeR: { cx: 830, cy: 300, rx: 70, ry: 100 }  
+    },
+
+    angry: {
+        eyebrows: true,
+        tears: false,
+        mouth: "M 450 500 C 500 440, 580 440, 630 500",
+        eyeL: { cx: 250, cy: 320, rx: 100, ry: 120 }, 
+        eyeR: { cx: 830, cy: 320, rx: 100, ry: 120 }
+    },
+
+    sad: {
+        eyebrows: true,
+        tears: true,
+        mouth: "M 450 500 C 500 440, 580 440, 630 500",
+        browLeft: "M 350 100 Q 250 150, 150 180", 
+        browRight: "M 730 100 Q 830 150, 930 180", 
+        eyeL: { cx: 250, cy: 320, rx: 100, ry: 120 }, 
+        eyeR: { cx: 830, cy: 320, rx: 100, ry: 120 }
+
+    },
+
+    thinking:{
+
     },
     
     neutral: {
+        eyebrows: false,
+        tears: false,
         mouth: "M 450 500 C 500 500, 580 500, 630 500",
-        // Mata normal
-        eyeL: { rx: 100, ry: 150, cy: 360 }, 
-        eyeR: { rx: 100, ry: 150, cy: 360 }
+        eyeL: { cx: 250, cy: 300, rx: 100, ry: 150 }, 
+        eyeR: { cx: 830, cy: 300, rx: 100, ry: 150 }
     }
 };
 
-// Fungsi untuk mengubah ekspresi (Mulut dan Mata)
 function setExpression(mood) {
     const data = expressions[mood];
     
     if (data) {
-        // 1. Ubah Mulut
         mouth.setAttribute('d', data.mouth);
         
-        // 2. Ubah Mata Kiri
         eyeLeft.setAttribute('rx', data.eyeL.rx);
         eyeLeft.setAttribute('ry', data.eyeL.ry);
         eyeLeft.setAttribute('cy', data.eyeL.cy);
         
-        // 3. Ubah Mata Kanan
         eyeRight.setAttribute('rx', data.eyeR.rx);
         eyeRight.setAttribute('ry', data.eyeR.ry);
         eyeRight.setAttribute('cy', data.eyeR.cy);
     }
+
+    if (data.eyebrows === true) {
+                    browLeft.classList.add('show-brows');
+                    requestAnimationFrame(() => {
+                        browLeft.setAttribute('d', data.browLeft);
+                    });
+                    browRight.classList.add('show-brows');
+                    requestAnimationFrame(() => {
+                        browRight.setAttribute('d', data.browRight);
+                    });
+                } else {
+                    browLeft.classList.remove('show-brows');
+                    browRight.classList.remove('show-brows');
+                }
+
+    if (data.tears === true) {
+        tearLeft.classList.add('show-tear');
+        tearRight.classList.add('show-tear');
+    } else {
+        tearLeft.classList.remove('show-tear');
+        tearRight.classList.remove('show-tear');  
+    }  
 }
 
-// --- SHORTKEY LISTENER ---
+
+// Listener keyboard
 document.addEventListener('keydown', (event) => {
     switch(event.key) {
         case '1':
@@ -134,12 +236,36 @@ document.addEventListener('keydown', (event) => {
             console.log("Ekspresi: Senyum");
             break;
         case '2':
-            setExpression('thinking');
-            console.log("Ekspresi: Berpikir");
+            setExpression('therock');
+            console.log("Ekspresi: therock");
             break;
         case '3':
             setExpression('neutral');
             console.log("Ekspresi: Datar");
+            break;
+        case '4':
+            setExpression('angry');
+            console.log("Ekspresi: Marah");
+            break;
+        case '5':
+            setExpression('sad');
+            console.log("Ekspresi: Sedih");
+            break;
+        case '6':
+            setExpression('dizzy');
+            console.log("Ekspresi: Pusing");
+            break;
+        case '7':
+            setExpression('charged');
+            console.log("Ekspresi: Charged");
+            break;
+        case '8':
+            setExpression('sleepy');
+            console.log("Ekspresi: Sleepy");
+            break;
+        case '9':
+            setExpression('tired');
+            console.log("Ekspresi: Ngantuk");
             break;
     }
 });
