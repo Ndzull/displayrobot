@@ -134,6 +134,103 @@
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
+
+        .sleepy-hidden {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .show-sleepy {
+            opacity: 1 !important;
+        }
+
+        .snot-bubble {
+            transform-origin: 510px 450px;
+            animation: snore-bubble 3.5s ease-in-out infinite;
+        }
+
+        @keyframes snore-bubble {
+            0%, 100% { transform: scale(0.3); opacity: 0.4; }
+            50% { transform: scale(1.3); opacity: 0.8; }
+        }
+
+        .zzz-text {
+            opacity: 0;
+            /* move diagonally from left toward upper-right, with a slight slant */
+            animation: float-zzz 3.5s linear infinite;
+            transform-origin: center;
+            fill: rgb(155, 89, 182);
+        }
+
+        .zzz-1 { animation-delay: 0s; }
+        .zzz-2 { animation-delay: 1s; }
+        .zzz-3 { animation-delay: 2s; }
+
+        @keyframes float-zzz {
+            0% { transform: translate(-60px, 0) rotate(-20deg) scale(0.8); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translate(120px, -140px) rotate(-20deg) scale(1.3); opacity: 0; }
+        }
+
+        .amazed-hidden {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .show-amazed { opacity: 1 !important; }
+        .star {
+            animation: pulse-star 1s ease-in-out infinite alternate;
+        }
+        @keyframes pulse-star {
+            0% { transform: scale(0.95); }
+            100% { transform: scale(1.05); }
+        }
+
+        .thinking-hidden {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .show-thinking {
+            opacity: 1 !important;
+        }
+
+        .dot-text {
+            opacity: 0;
+            animation: think-dot 2s infinite;
+            fill: white; 
+        }
+
+        .dot-1 { animation-delay: 0s; }
+        .dot-2 { animation-delay: 0.4s; }
+        .dot-3 { animation-delay: 0.8ss; }
+
+        @keyframes think-dot {
+            0% { opacity: 0; transform: translateY(10px); }
+            20% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        .salting-hidden {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .show-salting {
+            opacity: 1 !important;
+        }
+
+        .blush {
+            fill: #FFB6C1; 
+            filter: blur(15px); 
+            opacity: 0.8;
+        }
+
     </style>
 </head>
 <body>
@@ -166,6 +263,26 @@
             <path d="M 980 170 Q 950 200, 980 230" /> 
         </g>
 
+        <!-- salting -->
+        <g id="salting-effects" class="salting-hidden">
+            <!-- Blush Pipi Kiri -->
+            <ellipse cx="180" cy="480" rx="70" ry="35" class="blush" />
+            <!-- Blush Pipi Kanan -->
+            <ellipse cx="900" cy="480" rx="70" ry="35" class="blush" />
+            
+            <!-- Mata Kiri Melengkung (Senang) -->
+            <path d="M 180 320 Q 250 220, 320 320" fill="none" stroke="white" stroke-width="25" stroke-linecap="round" />
+            <!-- Mata Kanan Melengkung (Senang) -->
+            <path d="M 760 320 Q 830 220, 900 320" fill="none" stroke="white" stroke-width="25" stroke-linecap="round" />
+        </g>
+
+        <!-- berpikir-->
+        <g id="thinking-effects" class="thinking-hidden">
+            <text x="840" y="100" class="dot-text dot-1" font-size="90" font-family="sans-serif" font-weight="bold">.</text>
+            <text x="900" y="100" class="dot-text dot-2" font-size="90" font-family="sans-serif" font-weight="bold">.</text>
+            <text x="960" y="100" class="dot-text dot-3" font-size="90" font-family="sans-serif" font-weight="bold">.</text>
+        </g>
+
         <!-- pusing -->
          <g id="dizzy-eye-left" class="dizzy-eyes" transform="translate(250, 300)">
             <path class="spiral" d="M 0 0 A 15 15 0 0 1 30 0 A 30 30 0 0 1 -30 0 A 45 45 0 0 1 60 0 A 60 60 0 0 1 -60 0 A 75 75 0 0 1 90 0 A 90 90 0 0 1 -90 0 A 105 105 0 0 1 120 0 A 120 120 0 0 1 -120 0" fill="none" stroke="white" stroke-width="20" stroke-linecap="round" />
@@ -178,11 +295,26 @@
         <path id="mouth" class="animated-path" 
               d="M 450 500 C 500 560, 580 560, 630 500" 
               stroke="white" stroke-width="15" fill="none" stroke-linecap="round"/>
+
+        <!-- ngantuk -->
+        <g id="sleepy-effects" class="sleepy-hidden">
+            <circle cx="530" cy="450" r="40" class="snot-bubble" fill="#89CFF0" stroke="white" stroke-width="3" />
+            <text x="650" y="320" class="zzz-text zzz-1" fill="white" font-size="50" font-family="Comic Sans MS, sans-serif" font-weight="bold">Z</text>
+            <text x="710" y="250" class="zzz-text zzz-2" fill="white" font-size="70" font-family="Comic Sans MS, sans-serif" font-weight="bold">Z</text>
+            <text x="780" y="160" class="zzz-text zzz-3" fill="white" font-size="90" font-family="Comic Sans MS, sans-serif" font-weight="bold">Z</text>
+        </g>
+
+        <!-- kagum -->
+         <g id="amazed-effects" class="amazed-hidden">
+            <path class="star" d="M 250 160 Q 250 300 340 300 Q 250 300 250 440 Q 250 300 160 300 Q 250 300 250 160 Z" fill="#FCE86C" stroke="black" stroke-width="5" transform-origin="250px 300px"/>
+            <path class="star" d="M 830 160 Q 830 300 920 300 Q 830 300 830 440 Q 830 300 740 300 Q 830 300 830 160 Z" fill="#FCE86C" stroke="black" stroke-width="5" transform-origin="830px 300px"/>
+            <ellipse cx="540" cy="570" rx="90" ry="60" fill="url(#mouthGrad)" />
+        </g>
     </svg>
 
     <!-- keyboard shortcut -->
     <div class="hints">
-        Klik <kbd>1</kbd> Senyum | <kbd>2</kbd> Therock | <kbd>3</kbd> Datar | <kbd>4</kbd> Marah | <kbd>5</kbd> Sedih | <kbd>6</kbd> Pusing | <kbd>7</kbd> Charged | <kbd>8</kbd> Berpikir | <kbd>9</kbd> Ngantuk
+        <!-- Klik <kbd>1</kbd> Senyum | <kbd>2</kbd> Therock | <kbd>3</kbd> Datar | <kbd>4</kbd> Marah | <kbd>5</kbd> Sedih | <kbd>6</kbd> Pusing | <kbd>7</kbd> Bersemi | <kbd>8</kbd> Berpikir | <kbd>9</kbd> Ngantuk | <kbd>0</kbd> Kagum -->
     </div>
 
 <script>
@@ -194,6 +326,10 @@ const browRight = document.getElementById('eyebrow-right');
 const tearLeft  = document.getElementById('tear-left');
 const tearRight = document.getElementById('tear-right');
 const angerMark = document.getElementById('anger-mark');
+const thinkingEffects = document.getElementById('thinking-effects');
+const sleepyEffects = document.getElementById('sleepy-effects');
+const amazedEffects = document.getElementById('amazed-effects');
+const saltingEffects = document.getElementById('salting-effects');
 
 // ekspresi setting
 const expressions = {
@@ -245,7 +381,12 @@ const expressions = {
     },
 
     thinking:{
-
+        isThinking: true,
+        isDizzy: false, isSleepy: false, isAmazed: false,
+        eyebrows: false, tears: false, anger: false,
+        mouth: "M 450 460 C 410 510, 440 500, 470 480",
+        eyeL: { cx: 220, cy: 270, rx: 100, ry: 150 }, 
+        eyeR: { cx: 800, cy: 270, rx: 100, ry: 150 }
     },
     
     neutral: {
@@ -265,6 +406,53 @@ const expressions = {
         eyeL: { cx: 250, cy: 300, rx: 100, ry: 150 }, 
         eyeR: { cx: 830, cy: 300, rx: 100, ry: 150 }
     },
+
+    charged: {
+        isDizzy: false, 
+        eyebrows: true,
+        tears: false,
+        anger: false,
+        browLeft: "M 150 140 Q 250 210, 350 170",
+        browRight: "M 730 160 Q 830 100, 930 140",
+        mouth: "M 450 500 C 500 560, 580 560, 630 500",
+        eyeL: { cx: 250, cy: 300, rx: 100, ry: 150 }, 
+        eyeR: { cx: 830, cy: 300, rx: 100, ry: 150 }
+    },
+
+    sleepy: {
+        isSleepy: true, 
+        isDizzy: false,
+        eyebrows: false,
+        tears: false,
+        anger: false,
+        mouth: "M 510 530 C 510 480, 570 480, 570 530 C 570 580, 510 580, 510 530", 
+        eyeL: { cx: 250, cy: 300, rx: 100, ry: 5 }, 
+        eyeR: { cx: 830, cy: 300, rx: 100, ry: 5 }
+    },
+
+    salting: {
+        isSalting: true, isThinking: false, isDizzy: false, isSleepy: false, isAmazed: false,
+        eyebrows: false, tears: false, anger: false,
+        // Mulut senyum lebar
+        mouth: "M 420 480 C 480 560, 600 560, 660 480",
+        // Mata normal disetel default (tidak akan terlihat karena disembunyikan)
+        eyeL: { cx: 250, cy: 300, rx: 100, ry: 150 }, 
+        eyeR: { cx: 830, cy: 300, rx: 100, ry: 150 }
+    },
+
+    amazed: {
+        isAmazed: true, 
+        isSleepy: false, 
+        isDizzy: false,
+        eyebrows: false, 
+        tears: false, 
+        anger: false,
+        mouth: "M 510 530 C 510 480, 570 480, 570 530 C 570 580, 510 580, 510 530", 
+        eyeL: { cx: 250, cy: 300, rx: 100, ry: 150 },
+        eyeR: { cx: 830, cy: 300, rx: 100, ry: 150 }
+    }
+
+
 };
 
 function setExpression(mood) {
@@ -280,6 +468,34 @@ function setExpression(mood) {
         eyeRight.classList.remove('hide-normal');
         document.getElementById('dizzy-eye-left').classList.remove('show-dizzy');
         document.getElementById('dizzy-eye-right').classList.remove('show-dizzy');
+    }
+
+    if (typeof thinkingEffects !== 'undefined') thinkingEffects.classList.remove('show-thinking');
+    if (data.isThinking === true) {
+        thinkingEffects.classList.add('show-thinking');
+    } else {
+        thinkingEffects.classList.remove('show-thinking');
+    }
+
+    if (typeof sleepyEffects !== 'undefined') sleepyEffects.classList.remove('show-sleepy');
+    if (data.isSleepy === true) {
+        sleepyEffects.classList.add('show-sleepy');
+    } else {
+        sleepyEffects.classList.remove('show-sleepy');
+    }
+
+    if (typeof amazedEffects !== 'undefined') amazedEffects.classList.remove('show-amazed');
+    if (data.isAmazed === true) {
+        amazedEffects.classList.add('show-amazed');
+    } else {
+        amazedEffects.classList.remove('show-amazed');
+    }
+
+    if (typeof saltingEffects !== 'undefined') saltingEffects.classList.remove('show-salting');
+    if (data.isSalting === true) {
+        saltingEffects.classList.add('show-salting');
+    } else {
+        saltingEffects.classList.remove('show-salting');
     }
     
     if (data) {
@@ -352,16 +568,20 @@ document.addEventListener('keydown', (event) => {
             console.log("Ekspresi: Pusing");
             break;
         case '7':
-            setExpression('charged');
-            console.log("Ekspresi: Charged");
+            setExpression('salting');
+            console.log("Ekspresi: Bersemi");
             break;
         case '8':
-            setExpression('sleepy');
-            console.log("Ekspresi: Sleepy");
+            setExpression('thinking');
+            console.log("Ekspresi: Berpikir");
             break;
         case '9':
-            setExpression('tired');
+            setExpression('sleepy');
             console.log("Ekspresi: Ngantuk");
+            break;
+        case '0':
+            setExpression('amazed');
+            console.log("Ekspresi: Kagum");
             break;
     }
 });
